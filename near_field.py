@@ -1,6 +1,6 @@
 from backend import *
 from backend import be_np as np, be_scp as scipy
-from signal_utils import Signal_Utils
+from .signal_utils import Signal_Utils
 
 
 
