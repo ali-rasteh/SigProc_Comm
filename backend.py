@@ -24,7 +24,7 @@ Attributes:
 """
 
 import_general=True
-import_networking=True
+import_networking=False
 import_matplotlib=True
 import_numpy=True
 import_scipy=True
@@ -32,7 +32,7 @@ import_cupy=False
 import_cupyx=False
 import_sklearn=False
 import_cv2=False
-import_torch=True
+import_torch=False
 import_pynq=False
 import_sivers=False
 import_adafruit=False
