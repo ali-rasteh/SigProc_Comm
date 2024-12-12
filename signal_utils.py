@@ -10,6 +10,7 @@ class Signal_Utils(General):
     def __init__(self, params):
         super().__init__(params)
         
+        self.c=getattr(params, 'c', constants.c)
         self.fc=getattr(params, 'fc', None)
         self.fs=getattr(params, 'fs', 1e9)
         self.fs_tx=getattr(params, 'fs_tx', self.fs)
@@ -1616,3 +1617,5 @@ class Signal_Utils(General):
 
         ax.add_patch(arrow)
         
+
+
