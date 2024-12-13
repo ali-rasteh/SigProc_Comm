@@ -776,7 +776,7 @@ class Signal_Utils(General):
             q = 0
             # q = 0.5
             # u = np.random.choice(prime_nums)
-            u = 1
+            u = 3
 
             N = self.nfft_tx
             # N = self.sc_range[1] - self.sc_range[0] + 1
