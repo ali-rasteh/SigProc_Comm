@@ -1465,7 +1465,7 @@ class Signal_Utils(General):
         return rx_phase_list, aoa_list
 
 
-    def angle_of_arrival(self, txtd, rxtd, h_full, rx_phase_list, aoa_list, rx_phase_offset=0):
+    def angle_of_arrival(self, txtd, rxtd, h_full, rx_phase_list, aoa_list, fc=1e9, rx_phase_offset=0, rx_delay_offset=0):
         if len(rxtd.shape) == 3:
             rxtd = np.mean(rxtd.copy(), axis=0)
         rx_phase = self.calc_phase_offset(rxtd[0,:], rxtd[1,:])
@@ -1479,7 +1479,8 @@ class Signal_Utils(General):
         # # rx_phase = np.angle(z)
         # rx_phase = np.angle(rxtd[0,im] * np.conj(rxtd[1,im]))
 
-        rx_phase -= rx_phase_offset
+        # rx_phase -= rx_phase_offset
+        rx_phase -= (rx_delay_offset * 2 * np.pi * fc)
         # print("rx_phase: ", rx_phase)
 
         angle_sin = rx_phase/(2*np.pi*self.ant_dx)
@@ -1496,14 +1497,14 @@ class Signal_Utils(General):
         return rx_phase_list, aoa_list
     
 
-    def estimate_mimo_params(self, txtd, rxtd, h_full, H, rx_phase_list, aoa_list):
+    def estimate_mimo_params(self, txtd, rxtd, fc, h_full, H, rx_phase_list, aoa_list):
         # U, S, Vh = np.linalg.svd(H)
         # W_tx = Vh.conj().T
         # W_rx = U
         # rx_phase = np.mean(np.angle(U[0,:]*np.conj(U[1,:])))
         # tx_phase = np.mean(np.angle(Vh[:,0]*np.conj(Vh[:,1])))
 
-        rx_phase_list, aoa_list = self.angle_of_arrival(txtd=txtd, rxtd=rxtd, h_full=h_full, rx_phase_list=rx_phase_list, aoa_list=aoa_list, rx_phase_offset=self.rx_phase_offset)
+        rx_phase_list, aoa_list = self.angle_of_arrival(txtd=txtd, rxtd=rxtd, h_full=h_full, rx_phase_list=rx_phase_list, aoa_list=aoa_list, fc=fc, rx_phase_offset=self.rx_phase_offset, rx_delay_offset=self.rx_delay_offset)
         # print("AoA: {} deg".format(np.rad2deg(aoa)))
 
         return rx_phase_list, aoa_list
@@ -1601,7 +1602,7 @@ class Signal_Utils(General):
             ax.text(x, y, f'{int(value)}', fontsize=10, ha='center', va='center')
 
         ax.add_patch(Circle((0.5, 0.5), 0.05, color='black', zorder=5))
-        ax.text(0.5, 0.95, "Angle of Arrival", fontsize=30, fontweight='bold', horizontalalignment='center')
+        ax.text(0.5, 0.95, "Angle of Arrival", fontsize=20, fontweight='bold', horizontalalignment='center')
         ax.set_aspect('equal')
 
 
