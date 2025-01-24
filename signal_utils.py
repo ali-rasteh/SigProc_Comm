@@ -101,6 +101,10 @@ class Signal_Utils(General):
             aoa = np.array([np.arcsin(phase * wl / (2 * np.pi * ant_dx_m)), np.arcsin(phase * wl / (2 * np.pi * ant_dy_m))])
         return aoa
     
+
+    def mse(self, x, y):
+        return np.mean(np.abs(x - y) ** 2)
+    
     
     def sinc(self, x):
         sinc = np.sinc(x)       # sin(pi.x)/(pi.x)
