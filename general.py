@@ -438,3 +438,17 @@ class General(object):
         input_list = [x for x in input_list if not (x in seen or seen.add(x))]
         return input_list
 
+
+    def save_dict_to_json(self, dictionary, file_path):
+        """Save a dictionary to a JSON file."""
+        with open(file_path, 'w') as json_file:
+            json.dump(dictionary, json_file, indent=4)
+
+
+    def load_dict_from_json(self, file_path):
+        """Load a dictionary from a JSON file."""
+        with open(file_path, 'r') as json_file:
+            return json.load(json_file)
+        
+
+
