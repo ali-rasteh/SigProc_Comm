@@ -643,19 +643,12 @@ class Signal_Utils(General):
 
     def compute_slices_similarity(self, predicted, target):
         if predicted is None and target is not None:
-            det_rate = None
+            # det_rate = None
             missed = 1.0
             false_alarm = None
-            # det_rate = 0.0
+            det_rate = 0.0
             # missed = 1.0
             # false_alarm = 0.0
-        elif target is None and predicted is not None:
-            det_rate = None
-            missed = None
-            false_alarm = 1.0
-            # det_rate = 0.0
-            # missed = 0.0
-            # false_alarm = 1.0
         elif predicted is None and target is None:
             det_rate = None
             missed = None
@@ -663,6 +656,13 @@ class Signal_Utils(General):
             # det_rate = 1.0
             # missed = 0.0
             # false_alarm = 0.0
+        elif predicted is not None and target is None:
+            det_rate = None
+            missed = None
+            false_alarm = 1.0
+            # det_rate = 0.0
+            # missed = 0.0
+            # false_alarm = 1.0
         else:
             intersection = self.slice_intersection(predicted, target)
             union = self.slice_union(predicted, target)
