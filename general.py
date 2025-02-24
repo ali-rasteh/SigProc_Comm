@@ -451,4 +451,38 @@ class General(object):
             return json.load(json_file)
         
 
+    def save_class_attributes_to_json(self, obj, file_path):
+        """
+        Save all attributes of a class instance to a JSON file.
+        Args:
+            obj (object): The class instance whose attributes need to be saved.
+            file_path (str): The path to the JSON file where attributes will be saved.
+        """
+        attributes = {attr: getattr(obj, attr) for attr in dir(obj) if not callable(getattr(obj, attr)) and not attr.startswith("__")}
+        # Check if the attribute is JSON serializable
+        serializable_attributes = {}
+        for attr, value in attributes.items():
+            try:
+                json.dumps(value)
+                serializable_attributes[attr] = value
+            except (TypeError, OverflowError):
+                self.print(f"Attribute '{attr}' is not JSON serializable and will be skipped.", thr=1)
+        self.save_dict_to_json(serializable_attributes, file_path)
+
+
+    def load_class_attributes_from_json(self, obj, file_path):
+        """
+        Load all attributes of a class instance from a JSON file.
+        Args:
+            file_path (str): The path to the JSON file from which attributes will be loaded.
+        """
+        attributes = self.load_dict_from_json(file_path)
+        for attr, value in attributes.items():
+            if hasattr(obj, attr):
+                setattr(obj, attr, value)
+            else:
+                self.print("Attribute '{}' not found in the object {}.".format(attr, obj), thr=1)
+
+
+
 

@@ -55,6 +55,7 @@ class Signal_Utils(General):
         self.mask_mode = getattr(params, 'mask_mode', None)
         self.eval_smooth = getattr(params, 'eval_smooth', None)
         self.seed = getattr(params, 'seed', None)
+        self.seed_list = getattr(params, 'seed_list', None)
 
         self.t = getattr(params, 't', np.arange(0, self.n_samples) / self.fs)
         self.t_tx = getattr(params, 't_tx', np.arange(0, self.n_samples_tx) / self.fs_tx)
