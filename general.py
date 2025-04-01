@@ -8,7 +8,7 @@ class General(object):
     Attributes
     """
 
-    def __init__(self, params):
+    def __init__(self, params=None):
         """
         Initializes the class with the given parameters.
         Args:
@@ -24,7 +24,7 @@ class General(object):
                 gpu_id (int, optional): GPU ID to use. Default is 0.
                 use_torch (bool, optional): Flag to use PyTorch. Default is False.
         """
-
+            
         self.verbose_level = getattr(params, 'verbose_level', 5)
         self.plot_level = getattr(params, 'plot_level', 5)
         self.figs_dir = getattr(params, 'figs_dir', None)
