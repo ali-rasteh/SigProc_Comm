@@ -855,7 +855,7 @@ if __name__ == '__main__':
     # Create all the transmitters
     xtx =  np.vstack((xsrc, xref))
 
-    params.initialize()
+    params.calc_params()
     signals_inst = Signal_Utils_Rfsoc(params)
 
     # Create the simulation object and run the simulation

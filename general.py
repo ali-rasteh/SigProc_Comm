@@ -134,14 +134,27 @@ class General(object):
             IOError: If the file cannot be read or written.
         """
 
+        changed = False
+
         with open(file_path, 'r') as file:
             lines = file.readlines()
         with open(file_path, 'w') as file:
             for line in lines:
                 if param_name in line and '=' in line:
-                    line = f"{param_name} = {repr(new_value)}\n"
+                    old_value = line.split('=')[1].strip()
+                    if old_value != repr(new_value):
+                        line = f"{param_name} = {repr(new_value)}\n"
+                        changed = True
+                        self.print(f"Parameter '{param_name}' updated to '{new_value}' in {file_path}.", thr=3)
+                    else:
+                        changed = False
+                        self.print(f"Parameter '{param_name}' already set to '{new_value}' in {file_path}.", thr=3)
+
                 file.write(line)
-        self.print(f"Parameter '{param_name}' updated to '{new_value}' in {file_path}.", thr=3)
+
+        return changed
+
+
 
 
     # Convert .py to .ipynb

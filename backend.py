@@ -48,7 +48,6 @@ if import_general:
     import shutil
     import nbformat
     import copy
-    import json
     import platform
     import argparse
     import time
@@ -61,6 +60,11 @@ if import_general:
     import itertools
     import heapq
     import atexit
+    import json
+    import serial
+    import serial.tools.list_ports
+    import pickle
+    from math import ceil, log
 
 if import_networking:
     from scp import SCPClient
@@ -131,14 +135,21 @@ if import_sklearn:
     from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 if import_cv2:
-    import cv2
+    try:
+        import cv2
+    except ImportError:
+        pass
 
 if import_torch:
-    import torch
-    from torch import nn, optim
-    import torch.nn.functional as F
-    from torch.utils.data import Dataset, DataLoader, random_split
-    import torchvision.transforms as transforms
+    try:
+        import torch
+        from torch import nn, optim
+        import torch.nn.functional as F
+        from torch.utils.data import Dataset, DataLoader, random_split
+        import torchvision.transforms as transforms
+    except ImportError:
+        pass
+
 
 if import_pynq:
     from pynq import Overlay, allocate, MMIO, Clocks, interrupt, GPIO
@@ -148,6 +159,7 @@ if import_pynq:
 
 if import_sivers:
     from pyftdi.ftdi import Ftdi
+    from pyftdi.spi import SpiController
 
 if import_adafruit:
     import board
