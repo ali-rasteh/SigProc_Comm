@@ -148,7 +148,7 @@ class General(object):
                         self.print(f"Parameter '{param_name}' updated to '{new_value}' in {file_path}.", thr=3)
                     else:
                         changed = False
-                        self.print(f"Parameter '{param_name}' already set to '{new_value}' in {file_path}.", thr=3)
+                        self.print(f"Parameter '{param_name}' already set to '{new_value}' in {file_path}.", thr=5)
 
                 file.write(line)
 
@@ -495,7 +495,45 @@ class General(object):
                 setattr(obj, attr, value)
             else:
                 self.print("Attribute '{}' not found in the object {}.".format(attr, obj), thr=1)
+    
 
+    def compute_hash(self, file_path):
+        """Compute SHA256 hash of a file."""
+        sha256 = hashlib.sha256()
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+
+    def sync_directories(self, base_dir_1, base_dir_2):
+        """Compare and sync files from base_dir_1 to base_dir_2."""
+        changed_files = []
+        for root, _, files in os.walk(base_dir_1):
+            for file in files:
+                path1 = os.path.join(root, file)
+                rel_path = os.path.relpath(path1, base_dir_1)
+                path2 = os.path.join(base_dir_2, rel_path)
+
+                # Ensure target directory exists
+                os.makedirs(os.path.dirname(path2), exist_ok=True)
+
+                if os.path.exists(path2):
+                    hash1 = self.compute_hash(path1)
+                    hash2 = self.compute_hash(path2)
+                    if hash1 != hash2:
+                        shutil.copy2(path1, path2)
+                        changed_files.append(path2)
+                        self.print(f"Overwritten: {path2}", thr=0)
+                else:
+                    shutil.copy2(path1, path2)
+                    changed_files.append(path2)
+                    self.print(f"Copied new file: {path2}", thr=0)
+
+                os.remove(path1)
+                self.print(f"Deleted (same content): {path1}", thr=5)
+
+        return changed_files
 
 
 
