@@ -1623,6 +1623,42 @@ class Signal_Utils(General):
         plt.show()
 
 
+
+    def set_plot_params(self, ax=None, lines=None, plot_params_dict=None):
+
+        # Truncate the title to a maximum of 30 characters
+        if plot_params_dict['title'] is not None:
+            title = plot_params_dict['title']
+            title = (title[:plot_params_dict['title_max_chars']] + '...') if len(title) > plot_params_dict['title_max_chars'] else title
+            ax.set_title(plot_params_dict['title'])
+        if plot_params_dict['xlabel'] is not None:
+            ax.set_xlabel(plot_params_dict['xlabel'])
+        if plot_params_dict['ylabel'] is not None:
+            ax.set_ylabel(plot_params_dict['ylabel'])
+
+        ax.title.set_fontsize(plot_params_dict['title_size'])
+        ax.title.set_weight(plot_params_dict['title_weight'])
+        ax.xaxis.label.set_fontsize(plot_params_dict['xaxis_size'])
+        ax.yaxis.label.set_fontsize(plot_params_dict['yaxis_size'])
+        ax.tick_params(axis='both', which='major', labelsize=plot_params_dict['ticks_size'])  # For major ticks
+        ax.legend(fontsize=plot_params_dict['legend_size'])
+
+        ax.grid(True)
+        ax.minorticks_on()
+
+        if lines is not None:
+            for line in lines:
+                line.set_linewidth(plot_params_dict['line_width'])
+
+        plt.tight_layout()
+        if plot_params_dict['hspace'] is not None and plot_params_dict['wspace'] is not None:
+            plt.subplots_adjust(hspace=plot_params_dict['hspace'], wspace=plot_params_dict['wspace'])
+
+        return ax, lines
+
+
+
+
     def draw_half_gauge(self, ax, min_val=-90, max_val=90):
         ax.add_patch(Wedge((0.5, 0.5), 0.4, 90, -90, color='#f0f0f0', zorder=1))
         ax.add_patch(Wedge((0.5, 0.5), 0.35, 90, -90, color='#e0e0e0', zorder=2))
