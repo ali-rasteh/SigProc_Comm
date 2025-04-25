@@ -454,15 +454,45 @@ class General(object):
 
     def save_dict_to_json(self, dictionary, file_path):
         """Save a dictionary to a JSON file."""
+        for key, value in dictionary.items():
+            # Check if the value is JSON serializable
+            try:
+                json.dumps(value)
+            except (TypeError, OverflowError):
+                self.print(f"Value {value} for key '{key}' is not JSON serializable and will be skipped.", thr=1)
+                continue
         with open(file_path, 'w') as json_file:
             json.dump(dictionary, json_file, indent=4)
 
 
-    def load_dict_from_json(self, file_path):
+    def load_dict_from_json(self, file_path, convert_values=False):
         """Load a dictionary from a JSON file."""
-        with open(file_path, 'r') as json_file:
-            return json.load(json_file)
+
+        def convert_str_to_number(value):
+            """Convert string to int or float if possible."""
+            try:
+                if '.' in value:
+                    return float(value)
+                else:
+                    return int(value)
+            except ValueError:
+                return value
+            
+        def convert_dict_str_to_number(dictionary):
+            """Convert all string keys in a dictionary to numbers."""
+            if not isinstance(dictionary, dict):
+                return dictionary
+            return {convert_str_to_number(key): convert_dict_str_to_number(value) for key, value in dictionary.items()}
         
+
+        with open(file_path, 'r') as json_file:
+            json_dict = json.load(json_file)
+        if convert_values:
+            json_dict_updated = convert_dict_str_to_number(json_dict)
+
+        return json_dict_updated
+        
+
 
     def save_class_attributes_to_json(self, obj, file_path):
         """

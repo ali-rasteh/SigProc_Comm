@@ -162,21 +162,29 @@ class Signal_Utils(General):
     def calculate_snr(self, sig_td, sig_sc_range=[0, 0]):
         # Calculate the SNR of a signal in the frequency domain
         sig_fd = fftshift(fft(sig_td, axis=-1))
-        nfft = len(sig_fd)
+        n_sig = sig_fd.shape[0]
+        nfft = sig_fd.shape[-1]
 
+        snrs = []
         # Calculate the power of the signal
-        sig_and_noise = sig_fd[(sig_sc_range[0]+nfft//2):(sig_sc_range[1]+nfft//2+1)]
-        sig_and_noise_power = np.mean(np.abs(sig_and_noise) ** 2)
+        for i in range(n_sig):
+            sig_fd_i = sig_fd[i, :]
+            sig_and_noise = sig_fd_i[(sig_sc_range[0]+nfft//2):(sig_sc_range[1]+nfft//2+1)]
+            sig_and_noise_power = np.mean(np.abs(sig_and_noise) ** 2)
 
-        # Calculate the noise power
-        noise_1 = sig_fd[:sig_sc_range[0]+nfft//2]
-        noise_2 = sig_fd[sig_sc_range[1]+nfft//2+1:]
-        noise = np.concatenate((noise_1, noise_2), axis=-1)
-        noise_power = np.mean(np.abs(noise) ** 2)
+            # Calculate the noise power
+            noise_1 = sig_fd_i[:sig_sc_range[0]+nfft//2]
+            noise_2 = sig_fd_i[sig_sc_range[1]+nfft//2+1:]
+            noise = np.concatenate((noise_1, noise_2), axis=-1)
+            noise_power = np.mean(np.abs(noise) ** 2)
 
-        # Calculate the SNR
-        signal_power = sig_and_noise_power - noise_power
-        snr = signal_power / noise_power
+            # Calculate the SNR
+            signal_power = sig_and_noise_power - noise_power
+            snr = signal_power / noise_power
+            snrs.append(snr)
+
+        snrs = np.array(snrs)
+        snr = np.mean(snrs)
 
         return snr
 
