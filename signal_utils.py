@@ -968,16 +968,17 @@ class Signal_Utils(General):
         elif self.ant_dim == 2:
             n_ant_x = int(np.sqrt(n_sigs))
             n_ant_y = int(np.sqrt(n_sigs))
+
         for i in range(n_sigs):
             if self.ant_dim == 1:
-                theta = -2 * np.pi * self.ant_dx * np.sin(self.steer_phi_rad) * i
+                phase_shift = 2 * np.pi * self.ant_dx * np.sin(self.steer_phi_rad) * i
+                print('phase_shift: ', phase_shift)
             elif self.ant_dim == 2:
                 m = i // n_ant_y
                 n = i % n_ant_y
-                theta = -2 * np.pi * (m*self.ant_dx*np.sin(self.steer_theta_rad)*np.cos(self.steer_phi_rad) +\
+                phase_shift = 2 * np.pi * (m*self.ant_dx*np.sin(self.steer_theta_rad)*np.cos(self.steer_phi_rad) +\
                                       n*self.ant_dy*np.sin(self.steer_theta_rad)*np.sin(self.steer_phi_rad))
-            print('Theta: ', theta)
-            sigs_bf[i, :] = np.exp(1j * theta) * sigs[i, :]
+            sigs_bf[i, :] = np.exp(1j * phase_shift) * sigs[i, :]
 
         return sigs_bf
 
