@@ -106,13 +106,15 @@ class General(object):
         self.print(f"Latest Git Commit ID: {latest_commit_id}",thr=0)
 
 
-    def print_params(self, params):
+    def print_params(self, params=None):
         """
         Prints the attributes of the given params object.
         Args:
             params (object): An object whose attributes will be printed. 
                              Only non-callable attributes that do not start with '__' will be printed.
         """
+        if params is None:
+            params = self
 
         self.print("Run parameters:",thr=0)
         for attr in dir(params):
