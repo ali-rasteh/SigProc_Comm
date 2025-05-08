@@ -43,6 +43,10 @@ class General(object):
             self.device = None
 
 
+    def copy(self):
+        return copy.deepcopy(self)
+    
+
     def print(self, text='', thr=0):
         """
         Prints the given text if the verbose level is greater than or equal to the specified threshold.
@@ -115,6 +119,20 @@ class General(object):
             if not callable(getattr(params, attr)) and not attr.startswith("__"):
                 self.print(f"{attr} = {getattr(params, attr)}",thr=0)
         self.print('\n',thr=0)
+
+
+    def import_attributes(self, obj, params):
+        """
+        Imports attributes from the given params object to the specified object.
+        Args:
+            obj (object): The object to which attributes will be imported.
+            params (object): The object from which attributes will be imported.
+        """
+        for attr in dir(params):
+            if not callable(getattr(params, attr)) and not attr.startswith("__") and not hasattr(obj, attr):
+                setattr(obj, attr, getattr(params, attr))
+                self.print(f"Attribute '{attr}' imported from params to {obj}.", thr=5)
+
 
 
     # Modify a parameter in the Python script
