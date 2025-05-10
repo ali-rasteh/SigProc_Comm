@@ -27,9 +27,9 @@ class General(object):
             
         self.verbose_level = getattr(params, 'verbose_level', 5)
         self.plot_level = getattr(params, 'plot_level', 5)
-        self.figs_dir = getattr(params, 'figs_dir', None)
-        self.logs_dir = getattr(params, 'logs_dir', None)
-        self.data_dir = getattr(params, 'data_dir', None)
+        self.figs_dir = getattr(params, 'figs_dir', './figs/')
+        self.logs_dir = getattr(params, 'logs_dir', './logs/')
+        self.data_dir = getattr(params, 'data_dir', './data/')
         self.random_str = getattr(params, 'random_str', '')
         
         self.import_cupy = getattr(params, 'import_cupy', False)
@@ -122,18 +122,55 @@ class General(object):
                 self.print(f"{attr} = {getattr(params, attr)}",thr=0)
         self.print('\n',thr=0)
 
+    
+    def set_seed(self, seed=None, to_set=["numpy"]):
+        """
+        Sets the random seed for reproducibility.
+        Args:
+            seed (int): The seed value to set. If None, a random seed will be generated.
+            to_set (list): A list of libraries to set the seed for. Default is ["numpy"].
+        """
+        if seed is None:
+            seed = np.random.randint(0, 2**32 - 1)
+        self.print(f"Random seed: {seed}",thr=5)
+        for lib in to_set:
+            if lib == "numpy":
+                np.random.seed(seed)
+            elif lib == "torch":
+                torch.manual_seed(seed)
+                if torch.cuda.is_available():
+                    torch.cuda.manual_seed_all(seed)
+            elif lib == "cupy":
+                import cupy as cp
+                cp.random.seed(seed)
+            elif lib =="tensorflow":
+                tf.random.set_seed(seed)
+            elif lib == "sionna":
+                sionna.phy.config.seed = seed
+            else:
+                self.print(f"Library '{lib}' not recognized. Seed not set.", thr=1)
 
-    def import_attributes(self, obj, params):
+
+
+    def import_attributes(self, params, obj=None, overwrite=False):
         """
         Imports attributes from the given params object to the specified object.
         Args:
             obj (object): The object to which attributes will be imported.
             params (object): The object from which attributes will be imported.
         """
+        if obj is None:
+            obj = self
         for attr in dir(params):
-            if not callable(getattr(params, attr)) and not attr.startswith("__") and not hasattr(obj, attr):
-                setattr(obj, attr, getattr(params, attr))
-                self.print(f"Attribute '{attr}' imported from params to {obj}.", thr=5)
+            if not callable(getattr(params, attr)) and not attr.startswith("__"):
+                if hasattr(obj, attr):
+                    if overwrite:
+                        setattr(obj, attr, getattr(params, attr))
+                        self.print(f"Attribute '{attr}' imported from params to {obj}.", thr=6)
+                    else:
+                        self.print(f"Attribute '{attr}' already exists in {obj}. Skipping import.", thr=6)
+                else:
+                    self.print(f"Attribute '{attr}' not found in {obj}. Importing.", thr=6)
 
 
 
