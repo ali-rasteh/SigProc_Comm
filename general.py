@@ -43,6 +43,19 @@ class General(object):
             self.device = None
 
 
+    def create_dirs(self):
+        """
+        Creates directories for figures, logs, and data if they do not exist.
+        This method checks if the directories specified by `self.figs_dir`, `self.logs_dir`,
+        and `self.data_dir` exist. If they do not exist, it creates them.
+        Returns:
+            None
+        """
+        os.makedirs(self.figs_dir, exist_ok=True)
+        os.makedirs(self.logs_dir, exist_ok=True)
+        os.makedirs(self.data_dir, exist_ok=True)
+        
+        
     def copy(self):
         return copy.deepcopy(self)
     
