@@ -165,7 +165,7 @@ class General(object):
 
 
 
-    def import_attributes(self, params, obj=None, overwrite=False):
+    def import_attributes(self, params, obj=None, add_atts=True, overwrite=True):
         """
         Imports attributes from the given params object to the specified object.
         Args:
@@ -176,7 +176,7 @@ class General(object):
             obj = self
         for attr in dir(params):
             if not callable(getattr(params, attr)) and not attr.startswith("__"):
-                if hasattr(obj, attr):
+                if hasattr(obj, attr) or add_atts:
                     if overwrite:
                         setattr(obj, attr, getattr(params, attr))
                         self.print(f"Attribute '{attr}' imported from params to {obj}.", thr=6)
