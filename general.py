@@ -559,6 +559,8 @@ class General(object):
             json_dict = json.load(json_file)
         if convert_values:
             json_dict_updated = convert_dict_str_to_number(json_dict)
+        else:
+            json_dict_updated = json_dict
 
         return json_dict_updated
         
