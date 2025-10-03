@@ -1,5 +1,13 @@
-from backend import *
-from backend import be_np as np, be_scp as scipy
+import numpy as np
+from scipy import constants
+import matplotlib.pyplot as plt
+
+try:
+    import torch
+    from torch import nn, optim
+except:
+    pass
+
 from .signal_utils import Signal_Utils
 
 
