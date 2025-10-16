@@ -703,10 +703,10 @@ class Signal_Utils(General):
             # missed = 0.0
             # false_alarm = 1.0
         elif predicted is None and target is not None:
-            # det_rate = None
+            det_rate = None
             missed = 1.0
             false_alarm = None
-            det_rate = 0.0
+            # det_rate = 0.0
             # missed = 1.0
             # false_alarm = 0.0
         else:
